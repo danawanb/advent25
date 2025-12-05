@@ -29,6 +29,75 @@ defmodule Day4 do
     |> IO.inspect()
   end
 
+  def part2() do
+    matrix =
+      Day1.read_txt("day4.txt")
+      |> String.split("\n")
+      |> Enum.filter(fn x -> String.length(x) != 0 end)
+      |> Enum.map(&String.graphemes/1)
+
+    update_list =
+      matrix
+      |> Enum.with_index()
+      |> Enum.map(fn {inner_list, outer_index} ->
+        inner_list
+        |> Enum.with_index()
+        |> Enum.map(fn {_item, inner_index} ->
+          if direction_exist(outer_index, inner_index, matrix) == 1 do
+            if matrix |> Enum.at(outer_index) |> Enum.at(inner_index) == "@" do
+              {outer_index, inner_index}
+            end
+          end
+        end)
+      end)
+      |> List.flatten()
+      |> Enum.filter(fn x -> x != nil end)
+
+    recursive_update(matrix, length(update_list))
+  end
+
+  def recursive_update(matrix, n) when n > 0 do
+    update_list =
+      matrix
+      |> Enum.with_index()
+      |> Enum.map(fn {inner_list, outer_index} ->
+        inner_list
+        |> Enum.with_index()
+        |> Enum.map(fn {_item, inner_index} ->
+          if direction_exist(outer_index, inner_index, matrix) == 1 do
+            if matrix |> Enum.at(outer_index) |> Enum.at(inner_index) == "@" do
+              {outer_index, inner_index}
+            end
+          end
+        end)
+      end)
+      |> List.flatten()
+      |> Enum.filter(fn x -> x != nil end)
+
+    res =
+      Enum.reduce(update_list, matrix, fn {r, c}, acc ->
+        update_matrix_value(acc, r, c)
+      end)
+
+    recursive_update(res, length(update_list))
+  end
+
+  def recursive_update(matrix, 0) do
+    matrix
+    |> Enum.map(fn inner ->
+      Enum.filter(inner, fn val -> val == "x" end)
+    end)
+    |> List.flatten()
+    |> length()
+    |> IO.inspect()
+  end
+
+  defp update_matrix_value(matrix, row, col) do
+    List.update_at(matrix, row, fn r ->
+      List.update_at(r, col, fn _old -> "x" end)
+    end)
+  end
+
   defp direction_exist(outer_index, inner_index, item) do
     val =
       [

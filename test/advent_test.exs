@@ -12,6 +12,7 @@ defmodule AdventTest do
     # Day2.day2_part2()
 
     # Day3.part1()
-    Day4.part1()
+    # Day4.part1()
+    Day4.part2()
   end
 end
