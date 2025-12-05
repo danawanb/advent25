@@ -7,8 +7,10 @@ defmodule AdventTest do
   end
 
   test "advent of code" do
-    Day1.day1()
+    # Day1.day1()
     # Day2.day2_part1()
     # Day2.day2_part2()
+
+    Day3.part1()
   end
 end
